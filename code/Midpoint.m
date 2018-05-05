@@ -6,7 +6,7 @@ function [x,y] = Midpoint(f,x0,y0,N,xf)
 
 x(1,1) = x0;
 y(1,1) = y0;
-h = xf/N;
+h = (xf-x0)/N;
 
 for ii=2:N+1
     k = ii-1;
