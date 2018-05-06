@@ -3,19 +3,35 @@
 
 clc; clear all; set(0,'ShowHiddenHandles','on'); delete(get(0,'Children'));
 
-syms x y(x);
-xspan = [0 5];
+% sindex = @(A, s) A(s);     % An anonymous function for 2-D indexing
+% value = sindex(f, 1);  % Use the function to index the matrix
+
+N = 30;
+xspan = linspace(0,5,N);
 y0 = [0 0 1];
 
-D3y = diff(y,x,3);
-D2y = diff(y,x,2);
-D1y = diff(y,x);
-f = D3y + D2y == 0;
+%{
+    *Notes*
 
-% f = diff(y,x,3) + diff(y,x,2) == 0;
-function_name = func2str(matlabFunction(f));
-function_name = function_name(5:end);
-N = 30;
+   y''' + y'' = 0
+   {y' = dy/dx}
+
+    which leads to
+        y'   = y(2)
+        y''  = y(3)
+        y''' = -y(3)
+%}
+
+% function handles
+f = @(x,y) [y(3),y(3),-y(3)];
+
+% f1 = @(x,y1,y2,y3)  y2;
+% f2 = @(x,y1,y2,y3)  y3;
+% f3 = @(x,y1,y2,y3) -y3;
+% 
+% f = {f1,f2,f3};
+
+function_name = 'y'''''' + y'''' = 0';
 
 %% Calculations
 fprintf('Calculating...');                      tic;
@@ -24,7 +40,9 @@ fprintf('Calculating...');                      tic;
 [X,Y] = RK4system(f,xspan,y0,N);            	fprintf('.');
 
 % Confirm exact solution
-[~,Y_solution,sol] = ExactODE(f,x0,y0,N,xf);    fprintf('.');
+
+[X_Solution, Y_solution] = ode45(f, xspan, y0); fprintf('.');
+% [~,Y_solution,sol] = ExactODE(f,x0,y0,N,xf);    
 
 rk4_sol = double(f(X,Y));                       fprintf('.');
 exact_sol = double(f(X_solution,Y_solution));   fprintf('.');
