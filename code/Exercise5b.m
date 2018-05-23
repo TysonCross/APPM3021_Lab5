@@ -14,24 +14,18 @@ N = 300;
 %% Calculations
 fprintf('Calculating...');                      tic;
 
-[X,Y1] = Euler(f,x0,y0,N,xf);                   fprintf('.');
-[~,Y2] = Heun(f,x0,y0,N,xf);                    fprintf('.');
-[~,Y3] = Midpoint(f,x0,y0,N,xf);                fprintf('.');
-[~,Y4] = RK4(f,x0,y0,N,xf);                     fprintf('.');
+[X,Y_Euler] = Euler(f,x0,y0,N,xf);                   fprintf('.');
+[~,Y_Heun] = Heun(f,x0,y0,N,xf);                    fprintf('.');
+[~,Y_Midpoint] = Midpoint(f,x0,y0,N,xf);                fprintf('.');
+[~,Y_RK4] = RK4(f,x0,y0,N,xf);                     fprintf('.');
 
 % Confirm exact solution
 [~,Y_solution,sol] = ExactODE(f,x0,y0,N,xf);    fprintf('.');
 
-euler_solution = double(f(X,Y1));               fprintf('.');
-heun_solution = double(f(X,Y2));                fprintf('.');
-midpoint_solution = double(f(X,Y3));            fprintf('.');
-rk4_solution = double(f(X,Y4));                 fprintf('.');
-exact_solution = double(f(X,Y_solution));       fprintf('.');
-
-err1 = abs((exact_solution - euler_solution)    ./exact_solution);
-err2 = abs((exact_solution - heun_solution)     ./exact_solution);
-err3 = abs((exact_solution - midpoint_solution) ./exact_solution);
-err4 = abs((exact_solution - rk4_solution)      ./exact_solution);
+err1 = abs((Y_solution - Y_Euler)    ./Y_solution);
+err2 = abs((Y_solution - Y_Heun)     ./Y_solution);
+err3 = abs((Y_solution - Y_Midpoint) ./Y_solution);
+err4 = abs((Y_solution - Y_RK4)      ./Y_solution);
 
 err1(isnan(err1)) = 0;
 err2(isnan(err2)) = 0;
@@ -49,7 +43,7 @@ disp(['x is an element of [', num2str(x0), ',', num2str(xf), ']' ]);
 disp(['f(x,y) = ', function_name]);
 disp(['Exact Solution: y = ', char(sol)]);
 disp(' ')
-T = table (euler_solution, heun_solution, midpoint_solution, rk4_solution, exact_solution);
+T = table (Y_Euler, Y_Heun, Y_Midpoint, Y_RK4, Y_solution);
 T.Properties.VariableNames = {'Euler','Heun','Midpoint','RK4','Exact'};
 T.Properties.Description = 'Comparison of Methods';
 disp(['            ',T.Properties.Description, ':']);
@@ -97,7 +91,7 @@ subplot_entries = subplot_row*subplot_col;
 ax_main = subplot(subplot_row,subplot_col,[1 subplot_entries-8]);
 hold on;
 
-p1 = plot(euler_solution,...
+p1 = plot(Y_Euler,...
     'Color',pastel_blue,... 
     'DisplayName','Euler',...
 	'LineStyle','-',...
@@ -107,7 +101,7 @@ p1 = plot(euler_solution,...
     'MarkerSize',marker_size);
 hold on
 
-p2 = plot(heun_solution,...
+p2 = plot(Y_Heun,...
     'Color',pastel_orange,...                 
     'DisplayName','Huen',...
 	'LineStyle','-',...
@@ -117,7 +111,7 @@ p2 = plot(heun_solution,...
     'MarkerSize',marker_size);
 hold on
 
-p3 = plot(midpoint_solution,...
+p3 = plot(Y_Midpoint,...
     'Color',pastel_yellow,...                 
     'DisplayName','Midpoint',...
 	'LineStyle','-',...
@@ -127,7 +121,7 @@ p3 = plot(midpoint_solution,...
     'MarkerSize',marker_size);
 hold on
 
-p4 = plot(rk4_solution,...
+p4 = plot(Y_RK4,...
     'Color',pastel_green,...                 
     'DisplayName','Runge-Kutta',...
 	'LineStyle','-',...
@@ -137,7 +131,7 @@ p4 = plot(rk4_solution,...
     'MarkerSize',marker_size);
 hold on
 
-p5 = plot(exact_solution,...
+p5 = plot(Y_solution,...
     'Color',nice_red,...                 
     'DisplayName','Exact Solution',...
 	'LineStyle','-',...
@@ -176,7 +170,7 @@ t_main = title(T.Properties.Description);
 % Legend
 legend1 = legend('show');
 set(legend1,...
-     'Position',[0.470931150019318 0.787076450813594 0.11831938 0.12512873],...
+     'Position',[0.728485242069188 0.695429938951871 0.118343198475919 0.125105584825402],...
      'Box','off');
 hold on
 
@@ -218,10 +212,9 @@ hold on;
 t4_e = title(strcat(p4.DisplayName,' Relative Error'));
 
 %% Adjust figure
-xlim([ax_main ax1 ax2 ax3 ax4],[0 numel(exact_solution)]);
-ylim(ax_main,[-1.25 1]);
+xlim([ax_main ax1 ax2 ax3 ax4],[0 numel(Y_solution)]);
+ylim(ax_main,[0 1.5]);
 ax_main.Position = FillAxesPos(ax_main,0.9);
-MakeAxesEndArrows(ax_main,-0.199);
 ax1.Position = [0.04 0.2 0.45 0.1];
 ax2.Position = [0.53 0.2 0.445 0.1];
 ax3.Position = [0.04 0.05 0.45 0.1];

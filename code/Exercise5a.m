@@ -5,9 +5,11 @@ syms x y;
 x0 = 0;
 xf = 3;
 y0 = 1;
-f(x,y) = y*(1 -(4*x)/3);
+f(x,y) = (1 -(4/3)*x)*y;
+% g = @(y1,y2) [y1;y2;-(4/3)*y1];
+
 function_name = func2str(matlabFunction(f));
-function_name = function_name(8:end);
+function_name = function_name(7:end);
 N1 = 30;
 N2 = 300;
 
@@ -21,14 +23,10 @@ fprintf('Calculating...');                        	tic;
 [X_sol1,Y_sol1] = ExactODE(f,x0,y0,N1,xf);          fprintf('.');
 [X_sol2,Y_sol2,sol] = ExactODE(f,x0,y0,N2,xf);      fprintf('.');
 
-euler_sol1 = double(f(X1,Y1));
-exact_sol1 = double(f(X_sol1,Y_sol1));
-err1 = abs((exact_sol1 - euler_sol1)./exact_sol1);
+err1 = abs((Y_sol1 - Y1)./Y_sol1);
 err1(isnan(err1)) = 0;
 
-euler_sol2 = double(f(X2,Y2));
-exact_sol2 = double(f(X_sol2,Y_sol2));
-err2 = abs((exact_sol2 - euler_sol2)./exact_sol2);
+err2 = abs((Y_sol2 - Y2)./Y_sol2);
 err2(isnan(err2)) = 0;
 
 t = toc;                                            fprintf('\n');
@@ -42,8 +40,8 @@ disp(['x is an element of [', num2str(x0), ',', num2str(xf), ']' ]);
 disp(['f(x,y) = ', function_name]);
 disp(['Exact Solution: y = ', char(sol)]);
 disp(' ')
-T1 = table (X1, Y1, euler_sol1, exact_sol1, err1);
-T1.Properties.VariableNames = {'x','y','f','Exact','RE'};
+T1 = table (X1, Y1, Y_sol1, err1);
+T1.Properties.VariableNames = {'x','y','Exact','RE'};
 T1.Properties.Description = 'Euler''s Method';
 disp(['            ',T1.Properties.Description, ':']);
 disp(' ');
@@ -56,8 +54,8 @@ disp(['x is an element of [', num2str(x0), ',', num2str(xf), ']' ]);
 disp(['f(x,y) = ', function_name]);
 disp(['Exact Solution: y = ', char(sol)]);
 disp(' ')
-T2 = table (X2, Y2, euler_sol2, exact_sol2, err2);
-T2.Properties.VariableNames = {'x','y','f','Exact','RE'};
+T2 = table (X2, Y2, Y_sol2, err2);
+T2.Properties.VariableNames = {'x','y','Exact','RE'};
 T2.Properties.Description = T1.Properties.Description;
 disp(['            ',T2.Properties.Description, ':']);
 disp(' ');
@@ -94,22 +92,21 @@ brick_red =     [ 0.6350    0.0780    0.1840    0.8 ];
 
 % Draw plots
 ax1 = axes();
-p1 = plot(ax1,X1,double(f(X1,Y1)),...
+p1 = plot(X1,Y1,...
     'Color', pastel_blue,... 
     'DisplayName','N=30',...
 	'LineStyle','-',...
 	'LineWidth',1.5);
 hold on
 
-ax2 = axes();
-p2 = plot(ax2,X2,double(f(X2,Y2)),...
+p2 = plot(X2,Y2,...
     'Color', pastel_green,...                 
     'DisplayName','N=300',...
 	'LineStyle','-',...
 	'LineWidth',1.5);
 hold on
 
-p3 = plot(ax2,X2,double(f(X_sol2,Y_sol2)),...
+p3 = plot(X2,Y_sol2,...
     'Color', nice_red,...                 
     'DisplayName','Exact Solution',...
 	'LineStyle','-',...
@@ -117,7 +114,7 @@ p3 = plot(ax2,X2,double(f(X_sol2,Y_sol2)),...
 hold on
 
 % Axes and labels
-set([ax1 ax2],'FontSize',14,...
+set([ax1],'FontSize',14,...
     'Color','none',...
     'Box','off',...
     'XAxisLocation','origin',...
@@ -128,8 +125,6 @@ set([ax1 ax2],'FontSize',14,...
     'TickLabelInterpreter','latex');
 set(ax1,...
     'Xlim',[0 max(X1)]);
-set(ax2,...
-    'Xlim',[0 max(X2)]);
 hold on
 ylabel('y \rightarrow',...
     'FontName',fontName,...
@@ -151,12 +146,11 @@ t1 = title(ax1,T1.Properties.Description);
 % Legend
 legend1 = legend([p1; p2; p3], {'N=30', 'N=300', 'Exact Solution'});
 set(legend1,...
-     'Position',[0.459239183470059 0.740095701527999 0.122099037197811 0.132394109235202],...
+     'Position',[0.671688367102835 0.70455874717488 0.122099037197811 0.132394109235202],...
      'Box','off');
 hold on
 
 % Adjust figure
 ax1.Position = FillAxesPos(ax1,0.9);
 ax2.Position = ax1.Position;
-MakeAxesEndArrows(ax1,0.0085);
 hold off;
