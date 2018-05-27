@@ -1,24 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <stylesheet_registry xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
-   <stylesheet id="lab4" transformtype="fo"><!--27 Mar 2018 12:21:19 AM-->
-      <name>Lab 4</name>
+   <stylesheet id="lab5" transformtype="fo"><!--26 May 2018 3:04:20 AM-->
+      <name>Lab5</name>
       <description>Minimizes white space to reduce page count</description>
       <filename>$approot/sys/namespace/docbook/v4/xsl/fo/docbook_rptgen.xsl</filename>
       <xsl_code>
-         <xsl:param name="body.font.family">serif</xsl:param>
-         <xsl:param name="paper.type">A4</xsl:param>
          <xsl:variable name="show.comments" select="0"/>
          <xsl:variable name="header.rule" select="0"/>
          <xsl:variable name="footer.rule" select="0"/>
-         <xsl:variable name="page.margin.inner">'0.18in'</xsl:variable>
-         <xsl:variable name="page.margin.outer">'0.18in'</xsl:variable>
-         <xsl:variable name="page.margin.top" select="'0.25in'"/>
+         <xsl:variable name="page.margin.inner" select="'0.1in'"/>
+         <xsl:variable name="page.margin.outer" select="'0.1in'"/>
+         <xsl:variable name="page.margin.top" select="'0.2in'"/>
          <xsl:variable name="page.margin.bottom" select="'0.25in'"/>
-         <xsl:variable name="body.margin.top" select="'0.25in'"/>
+         <xsl:variable name="body.margin.top" select="'0.2in'"/>
          <xsl:variable name="body.margin.bottom" select="'0.25in'"/>
          <xsl:variable name="region.after.extent" select="'0.18in'"/>
          <xsl:variable name="region.before.extent" select="'0.18in'"/>
-         <xsl:variable name="body.font.master">8</xsl:variable>
+         <xsl:variable name="body.font.master" select="9"/>
          <xsl:variable name="line-height" select="1.01"/>
          <xsl:attribute-set name="formal.object.properties">
             <xsl:attribute name="space-before.minimum">0.1em</xsl:attribute>
